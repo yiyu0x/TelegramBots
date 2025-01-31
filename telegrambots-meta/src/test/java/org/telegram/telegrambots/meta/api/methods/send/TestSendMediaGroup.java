@@ -11,6 +11,10 @@ import java.io.InputStream;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.telegram.telegrambots.meta.api.objects.media.InputMediaAnimation;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiValidationException;
+
 public class TestSendMediaGroup {
     private ObjectMapper mapper;
 
