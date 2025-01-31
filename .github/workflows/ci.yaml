@@ -24,4 +24,6 @@ jobs:
           cache: maven  
           
       - name: Run Specific Test
-        run: mvn test -Dtest=org.telegram.telegrambots.meta.api.methods.send.TestSendMessage
+        run: |
+          cd telegrambots-meta
+          mvn test -Dtest=org.telegram.telegrambots.meta.api.methods.send.TestSendMessage
