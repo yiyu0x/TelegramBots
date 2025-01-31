@@ -22,9 +22,6 @@ jobs:
           distribution: 'temurin' 
           java-version: '11'
           cache: maven  
-
-      - name: Install dependencies
-        run: mvn -q install -Dgpg.skip
-
+          
       - name: Run Specific Test
         run: mvn test -Dtest=org.telegram.telegrambots.meta.api.methods.send.TestSendMessage
