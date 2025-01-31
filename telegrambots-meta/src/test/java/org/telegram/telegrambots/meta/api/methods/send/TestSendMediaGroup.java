@@ -41,4 +41,61 @@ public class TestSendMediaGroup {
             fail(e);
         }
     }
+
+        
+    /**
+     * Test that a TelegramApiValidationException is thrown when no media is provided to SendMediaGroup.
+     * This ensures that the system does not accept a SendMediaGroup object without any media.
+     */
+    @Test
+    void testEmptyMedia() {
+        assertThrows(TelegramApiValidationException.class, () -> {
+            // Build a SendMediaGroup object without any media (empty media list)
+            SendMediaGroup sendMediaGroup = SendMediaGroup
+                    .builder()
+                    .chatId("12345") // Set chatId (required)
+                    .build(); // No media provided in the builder
+            
+            // Validate the SendMediaGroup object. This should throw a TelegramApiValidationException
+            // because the media list is empty (it doesn't contain any valid media).
+            sendMediaGroup.validate(); // Should throw exception for empty media list
+        });
+    }
+
+    @Test
+    /**
+     * Test that a TelegramApiValidationException is thrown when an invalid media type (InputMediaAnimation) is added to SendMediaGroup.
+     * This ensures that the system rejects unsupported media types like animations.
+     */
+    void testInvalidMediaType() {
+        assertThrows(TelegramApiValidationException.class, () -> {
+            // Create a valid InputMediaAnimation object (which should not be allowed)
+            InputMediaAnimation invalidMedia = new InputMediaAnimation(
+            "fileId",                   // media identifier
+            "caption",                  // caption for the media
+            "HTML",                     // parseMode (optional)
+            null,                       // captionEntities (optional, can be null)
+            false,                      // isNewMedia (optional)
+            "fileName",                 // mediaName (optional)
+            null,                       // newMediaFile (optional)
+            null,                       // newMediaStream (optional)
+            320,                        // width (optional)
+            240,                        // height (optional)
+            10,                         // duration (optional)
+            null,                       // thumbnail (optional)
+            false                       // hasSpoiler (optional)
+            );
+
+            // Build the SendMediaGroup object and try to add the invalid media type
+            SendMediaGroup sendMediaGroup = SendMediaGroup
+                    .builder()
+                    .chatId("12345") // Set chatId (required)
+                    .media(invalidMedia) // Add invalid media type (InputMediaAnimation)
+                    .build();
+
+            // Validate the SendMediaGroup object. This should throw a TelegramApiValidationException
+            // because InputMediaAnimation is not allowed in a SendMediaGroup.
+            sendMediaGroup.validate(); // Should throw exception for invalid media type
+        });
+    }
 }
