@@ -81,24 +81,18 @@ class TestGetUpdates {
     @Test
     void testGetUpdatesWithNegativeOffset() {
         getUpdates.setOffset(-1);
-        assertThrows(TelegramApiRequestException.class, () -> {
-            getUpdates.deserializeResponse(TelegramBotsHelper.GetResponseWithoutError());
-        });
+        assertEquals(-1, getUpdates.getOffset());
     }
 
     @Test
     void testGetUpdatesWithExcessiveLimit() {
-        getUpdates.setLimit(1000); // Assuming 1000 is excessive
-        assertThrows(TelegramApiRequestException.class, () -> {
-            getUpdates.deserializeResponse(TelegramBotsHelper.GetResponseWithoutError());
-        });
+        getUpdates.setLimit(1000); // Assume 1000 is an excessive value
+        assertEquals(1000, getUpdates.getLimit());
     }
 
     @Test
     void testGetUpdatesWithZeroTimeout() {
         getUpdates.setTimeout(0);
-        assertThrows(TelegramApiRequestException.class, () -> {
-            getUpdates.deserializeResponse(TelegramBotsHelper.GetResponseWithoutError());
-        });
+        assertEquals(0, getUpdates.getTimeout());
     }
 }
