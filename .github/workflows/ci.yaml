@@ -27,3 +27,4 @@ jobs:
         run: |
           cd telegrambots-meta
           mvn test -Dtest=org.telegram.telegrambots.meta.api.methods.send.TestSendMessage
+          mvn test -Dtest=org.telegram.telegrambots.meta.api.methods.send.TestSendMediaGroup
