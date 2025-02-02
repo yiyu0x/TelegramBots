@@ -12,6 +12,12 @@ jobs:
     name: Run Specific Test
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        test-file: 
+          - org.telegram.telegrambots.meta.api.methods.send.TestSendMessage
+          - org.telegram.telegrambots.meta.api.methods.send.TestSendMediaGroup
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -26,5 +32,4 @@ jobs:
       - name: Run Specific Test
         run: |
           cd telegrambots-meta
-          mvn test -Dtest=org.telegram.telegrambots.meta.api.methods.send.TestSendMessage
-          mvn test -Dtest=org.telegram.telegrambots.meta.api.methods.send.TestSendMediaGroup
+          mvn test -Dtest=${{ matrix.test-file }}
