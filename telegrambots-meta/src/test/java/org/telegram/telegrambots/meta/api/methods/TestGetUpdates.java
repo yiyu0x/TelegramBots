@@ -66,4 +66,39 @@ class TestGetUpdates {
             assertEquals("Conflict: terminated by other getUpdates request; make sure that only one bot instance is running", e.getApiResponse());
         }
     }
+
+    @Test
+    void testGetUpdatesWithValidParameters() throws Exception {
+        getUpdates.setOffset(0);
+        getUpdates.setLimit(10);
+        getUpdates.setTimeout(30);
+        
+        String json = mapper.writeValueAsString(getUpdates);
+        assertNotNull(json);
+        assertEquals("{\"offset\":0,\"limit\":10,\"timeout\":30,\"method\":\"getupdates\"}", json);
+    }
+
+    @Test
+    void testGetUpdatesWithNegativeOffset() {
+        getUpdates.setOffset(-1);
+        assertThrows(TelegramApiRequestException.class, () -> {
+            getUpdates.deserializeResponse(TelegramBotsHelper.GetResponseWithoutError());
+        });
+    }
+
+    @Test
+    void testGetUpdatesWithExcessiveLimit() {
+        getUpdates.setLimit(1000); // Assuming 1000 is excessive
+        assertThrows(TelegramApiRequestException.class, () -> {
+            getUpdates.deserializeResponse(TelegramBotsHelper.GetResponseWithoutError());
+        });
+    }
+
+    @Test
+    void testGetUpdatesWithZeroTimeout() {
+        getUpdates.setTimeout(0);
+        assertThrows(TelegramApiRequestException.class, () -> {
+            getUpdates.deserializeResponse(TelegramBotsHelper.GetResponseWithoutError());
+        });
+    }
 }
