@@ -18,6 +18,7 @@ jobs:
           - org.telegram.telegrambots.meta.api.methods.send.TestSendMessage
           - org.telegram.telegrambots.meta.api.methods.send.TestSendMediaGroup
           - org.telegram.telegrambots.meta.api.methods.TestGetUpdates
+          - org.telegram.telegrambots.meta.api.methods.TestSetGameScore
 
     steps:
       - name: Checkout code
