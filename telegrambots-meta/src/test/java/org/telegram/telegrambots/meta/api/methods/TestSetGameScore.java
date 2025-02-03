@@ -11,6 +11,7 @@ import java.io.Serializable;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
@@ -51,5 +52,37 @@ class TestSetGameScore {
         Serializable result = setGameScore.deserializeResponse(TelegramBotsHelper.GetSetGameScoreMessageResponse());
         assertNotNull(result);
         assertTrue(result instanceof Message);
+    }
+
+    @Test
+    void testSetGameScoreWithZeroScore() {
+        SetGameScore zeroScore = new SetGameScore(98765L, 0);
+        zeroScore.setChatId(12345L);
+        assertNotNull(zeroScore);
+        assertEquals(0, zeroScore.getScore());
+    }
+
+    @Test
+    void testSetGameScoreWithNegativeScore() {
+        SetGameScore negativeScore = new SetGameScore(98765L, -10);
+        negativeScore.setChatId(12345L);
+        assertNotNull(negativeScore);
+        assertEquals(-10, negativeScore.getScore());
+    }
+
+    @Test
+    void testSetGameScoreWithLargeScore() {
+        SetGameScore largeScore = new SetGameScore(98765L, Integer.MAX_VALUE);
+        largeScore.setChatId(12345L);
+        assertNotNull(largeScore);
+        assertEquals(Integer.MAX_VALUE, largeScore.getScore());
+    }
+
+    @Test
+    void testSetGameScoreWithoutMessageId() {
+        SetGameScore noMessageId = new SetGameScore(98765L, 100);
+        noMessageId.setChatId(12345L);
+        assertNotNull(noMessageId);
+        assertNull(noMessageId.getMessageId());
     }
 }
