@@ -146,13 +146,13 @@ public class TestTelegramMultipartBuilder {
 
     @Test
     public void testAddInputFileWithFiniteStateMachine() throws IOException {
-        // 準備測試數據
+        // Prepare test data
         ClassLoader classLoader = getClass().getClassLoader();
         File file = new File(classLoader.getResource("test_file.txt").getFile());
         InputFile inputFile = new InputFile(file, "test_file.txt");
 
-        // 測試狀態機
-        // 狀態定義
+        // Test state machine
+        // State definition
         enum State {
             INITIAL,
             FILE_NULL,
@@ -163,46 +163,46 @@ public class TestTelegramMultipartBuilder {
 
         State state = State.INITIAL;
 
-        // 狀態轉換
+        // State transition
         while (true) {
             switch (state) {
                 case INITIAL:
                     if (inputFile == null) {
                         state = State.FILE_NULL;
                     } else {
-                        // 假設 inputFile 有一個方法來檢查是否為新文件
-                        // 如果沒有，您可能需要根據實際情況進行調整
+                        // Assume inputFile has a method to check if it is a new file
+                        // If not, you may need to adjust based on actual conditions
                         state = inputFile.getNewMediaFile() != null ? State.FILE_NEW : State.FILE_EXISTING;
                     }
                     break;
 
                 case FILE_NULL:
-                    // 檢查當文件為 null 時的行為
+                    // Check behavior when the file is null
                     TelegramMultipartBuilder resultNull = multipartBuilder.addInputFile("testField", null, true);
                     assertNotNull(resultNull);
-                    return; // 結束測試
+                    return; // End test
 
                 case FILE_NEW:
-                    // 檢查當文件為新文件時的行為
+                    // Check behavior when the file is a new file
                     TelegramMultipartBuilder resultNew = multipartBuilder.addInputFile("testField", inputFile, true);
                     assertNotNull(resultNew);
-                    // 這裡可以添加更多的斷言來檢查結果
-                    state = State.ADD_FIELD; // 轉換到添加字段狀態
+                    // More assertions can be added to check results
+                    state = State.ADD_FIELD; // Transition to add field state
                     break;
 
                 case FILE_EXISTING:
-                    // 檢查當文件已存在時的行為
+                    // Check behavior when the file already exists
                     TelegramMultipartBuilder resultExisting = multipartBuilder.addInputFile("testField", inputFile, false);
                     assertNotNull(resultExisting);
-                    state = State.ADD_FIELD; // 轉換到添加字段狀態
+                    state = State.ADD_FIELD; // Transition to add field state
                     break;
 
                 case ADD_FIELD:
-                    // 檢查添加字段的行為
+                    // Check behavior of adding field
                     TelegramMultipartBuilder finalResult = multipartBuilder.addInputFile("testField", inputFile, true);
                     assertNotNull(finalResult);
-                    // 這裡可以添加更多的斷言來檢查結果
-                    return; // 完成，返回
+                    // More assertions can be added to check results
+                    return; // Complete, return
             }
         }
     }
