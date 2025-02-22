@@ -15,6 +15,7 @@ jobs:
     strategy:
       matrix:
         test-file: 
+          - org.telegram.telegrambots.meta.api.methods.send.TestSendLocation
           - org.telegram.telegrambots.meta.api.methods.send.TestSendMessage
           - org.telegram.telegrambots.meta.api.methods.send.TestSendMediaGroup
           - org.telegram.telegrambots.meta.api.methods.TestGetUpdates
