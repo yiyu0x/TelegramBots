@@ -2,6 +2,7 @@ package org.telegram.telegrambots.meta.api.methods;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -43,6 +44,12 @@ public class StopMessageLiveLocation extends BotApiMethodSerializable {
     private static final String REPLY_MARKUP_FIELD = "reply_markup";
     private static final String BUSINESS_CONNECTION_ID_FIELD = "business_connection_id";
 
+    // Default ObjectMapper instance
+    private static final ObjectMapper DEFAULT_MAPPER = new ObjectMapper();
+    
+    // Injectable ObjectMapper instance
+    private ObjectMapper objectMapper;
+
     /**
      * Required if inline_message_id is not specified. Unique identifier for the chat to send the
      * message to (Or username for channels)
@@ -74,7 +81,15 @@ public class StopMessageLiveLocation extends BotApiMethodSerializable {
 
     @Tolerate
     public void setChatId(Long chatId) {
-        this.chatId = chatId == null ? null : chatId.toString();
+        this.chatId = chatId.toString();
+    }
+
+    /**
+     * Get the ObjectMapper for serialization/deserialization
+     * Returns the default instance if none is set
+     */
+    private ObjectMapper getObjectMapper() {
+        return objectMapper != null ? objectMapper : DEFAULT_MAPPER;
     }
 
     @Override
@@ -84,9 +99,11 @@ public class StopMessageLiveLocation extends BotApiMethodSerializable {
 
     @Override
     public Serializable deserializeResponse(String answer) throws TelegramApiRequestException {
+        ObjectMapper mapper = getObjectMapper();
+        
         try {
-            ApiResponse<Message> result = OBJECT_MAPPER.readValue(answer,
-                    new TypeReference<ApiResponse<Message>>(){});
+            ApiResponse<Boolean> result = mapper.readValue(answer,
+                    new TypeReference<ApiResponse<Boolean>>(){});
             if (result.getOk()) {
                 return result.getResult();
             } else {
@@ -94,9 +111,8 @@ public class StopMessageLiveLocation extends BotApiMethodSerializable {
             }
         } catch (IOException e) {
             try {
-                ApiResponse<Boolean> result = OBJECT_MAPPER.readValue(answer,
-                        new TypeReference<ApiResponse<Boolean>>() {
-                        });
+                ApiResponse<Message> result = mapper.readValue(answer,
+                        new TypeReference<ApiResponse<Message>>(){});
                 if (result.getOk()) {
                     return result.getResult();
                 } else {
@@ -131,10 +147,16 @@ public class StopMessageLiveLocation extends BotApiMethodSerializable {
     }
 
     public static class StopMessageLiveLocationBuilder {
-
+        private ObjectMapper objectMapper;
+        
+        public StopMessageLiveLocationBuilder objectMapper(ObjectMapper objectMapper) {
+            this.objectMapper = objectMapper;
+            return this;
+        }
+        
         @Tolerate
         public StopMessageLiveLocationBuilder chatId(Long chatId) {
-            this.chatId = chatId == null ? null : chatId.toString();
+            this.chatId = chatId.toString();
             return this;
         }
     }
